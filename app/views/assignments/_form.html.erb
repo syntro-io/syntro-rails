@@ -1,0 +1,136 @@
+<%= simple_form_for @assignment, :html => { :class => 'form-horizontal' } do |f| %>
+  <fieldset>
+    <legend>Test Assignment Components</legend>
+    <% if !@assignment.id.blank? and !@assignment.product_id.blank? %>
+      <%= f.association :product, collection: product_list, disabled: true %>
+    <% else %>
+      <%= f.association :product, collection: product_list, prompt: 'Select a product' %>
+    <% end %>
+
+    <% # We render the version select here so we can select pre-selected values %>
+    <% # Version field updates use the partial %>
+    <div id="productVersions">
+      <% if !@assignment.id.blank? and !@assignment.product_id.blank? %>
+        <%= f.association :version, collection: version_list(@assignment.product_id), disabled: true %>
+      <% else %>
+        <%= f.association :version, collection: version_list(@assignment.product_id) %>
+      <% end %>
+  	</div>
+
+
+    <% # We render the test plan select here so we can select pre-selected values %>
+    <% # Test Plan field updates use the partial %>
+    <div id="productPlans">
+      <% if !@assignment.id.blank? and !@assignment.product_id.blank? %>
+        <%= f.association :test_plan, collection: test_plans_list(@assignment), disabled: true %>
+      <% else %>
+        <%= f.association :test_plan, collection: test_plans_list(@assignment), promt: ' ' %>
+      <% end %>
+  	</div>
+
+    <% # We render the test plan stencik select here so we can select pre-selected values %>
+    <% # Test Plan stencil field updates use the partial %>
+    <div id="productStencils">
+      <% if !@assignment.id.blank? and !@assignment.product_id.blank? %>
+  	    <%= f.association :stencil, collection: stencils_list(@assignment), disabled: true %>
+  	  <% else %>
+  	    <%= f.association :stencil, collection: stencils_list(@assignment), prompt: ' ' %>
+  	  <% end %>
+    </div>
+    <%= f.input :notes, :input_html => { :rows => 5, :class => "input-xxlarge"}%>    
+
+	<% if CustomField.where(:item_type => 'assignment', :active => true).count > 0 %>
+		<legend>Custom Fields</legend>
+		<%= f.fields_for :custom_items do |custom_item|%>
+		  <div class="control-group">
+			<%= custom_item.hidden_field :custom_field_id %>
+			<label class="control-label" for="modified_by"><%= CustomField.where(:id => custom_item.object.custom_field_id).first.field_name %></label>
+			<div class="controls">
+			  <% field_type = CustomField.where(:id => custom_item.object.custom_field_id).first.field_type %>
+			  <% if field_type == 'string' %>
+				<%= custom_item.text_field :value %>
+			  <% elsif field_type == 'drop_down' %>
+				<%= custom_item.select :value, CustomField.where(:id => custom_item.object.custom_field_id).first.accepted_values.split(','), :include_blank => true %>
+			  <% elsif field_type == 'check_box' %>
+				<%= custom_item.check_box :value %>
+			  <% elsif field_type == 'number' %>
+				<%= custom_item.number_field :value, :step => 0.000001 %>
+			  <% elsif field_type == 'radio_button' %>
+				<% CustomField.where(:id => custom_item.object.custom_field_id).first.accepted_values.split(',').each do |radio_value| %>
+				  <label class="radio">
+				    <%= custom_item.radio_button :value, radio_value %>
+				    <%= custom_item.label :value, radio_value %>
+				  </label>
+				<% end %>
+			  <% elsif field_type == 'link' %>
+			  	<%= custom_item.text_field :value %>
+			  <% end %>
+			</div>
+		  </div>
+		<% end %>
+	<% end %>
+
+    <% if (Setting.value('Ticket System').present?) %>
+      <div class="control-group select optional <%= :issues %>">
+        <%= f.label :issues, "Select issues", { :class => 'select optional control-label' } %>
+        <div class="controls">
+          <% if @assignment.id.present? and @assignment.product_id.present? and @assignment.version_id.blank? %>
+            <%= f.select :issues, ticket_issues(@assignment.product_id), {}, {:multiple => true, :class => 'select optional select-xxlarge'} %>
+          <% elsif @assignment.id.present? and @assignment.product_id.present? and @assignment.version_id.present? %>
+            <%= f.select :issues, ticket_issues(@assignment.product_id, @assignment.version_id), {}, {:multiple => true, :class => 'select optional select-xxlarge'} %>
+          <% else %>
+            <%= f.select :issues, ticket_issues(""), {}, {:multiple => true, :class => 'select optional select-xxlarge'} %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <legend>Task Components</legend>
+
+    <%= f.simple_fields_for :task do |task| %>
+      <% if @assignment.task.id %>
+  	    <%= task.association :user, collection: @users_select %>
+  	  <% else %>
+  	    <%= task.association :user, collection: @users_select, prompt: 'Select a user' %>
+  	  <% end %>
+
+	    <%= task.input :due_date, as: :string %>
+	 <% end %>
+  </fieldset>
+  <div class="actions">
+    <%= f.submit nil, :class => "btn btn-success" %>
+    <a href='#' onclick='history.go(-1);return false;', class="btn btn-inverse">Back</a>
+  </div>
+  
+<% end %>
+
+<script>
+// when the #test result product field changes get a list of versions
+$("#assignment_product_id").change(function() {
+  // make a POST call and replace the content
+  var product = $('select#assignment_product_id :selected').val();
+  if(product == "") product="0";
+  $("#assignment_issues").empty()
+  jQuery.get('<%= jquery_assignment_version_update_url %>/' + product, function(data) { 
+    $("#assignment_version_id").empty().append(data);
+  })
+  jQuery.get('<%= jquery_assignment_test_plan_update_url %>/' + product, function(data) { 
+    $("#assignment_test_plan_id").empty().append(data);
+  })
+  jQuery.get('<%= jquery_assignment_stencil_update_url %>/' + product, function(data) { 
+    $("#assignment_stencil_id").empty().append(data);
+  })
+  
+  return false;
+});
+
+$("#assignment_version_id").change(function(){
+  var product = $('select#assignment_product_id :selected').val();
+  var version = $('select#assignment_version_id :selected').val();
+  if(product == "") product="0";
+  if(version == "") version="0";
+  jQuery.get('<%= jquery_assignment_ticket_issue_update_url %>/' + product + '/' + version, function(data) { 
+    $("#assignment_issues").empty().append(data);
+  })
+  
+});
+</script>

@@ -1,0 +1,52 @@
+#! /usr/bin/env ruby
+require 'fileutils'
+require 'optparse'
+
+options = {}
+options[:production] = false
+OptionParser.new do |opts|
+  opts.banner = 'Usage: setup [options]'
+
+  opts.on('-p', '--production', 'Production install') { |_v| options[:production] = true }
+end.parse!
+
+# provide a random char
+def random_char(num)
+  if num < 26
+    (65 + num).chr
+  elsif num < 52
+    (97 + num - 26).chr
+  elsif num < 62
+    (48 + num - 52).chr
+  elsif num >= 62
+    '!'
+  end
+end
+
+# copy config files
+Dir['config/examples/*'].each do |source|
+  destination = "config/#{File.basename(source)}"
+  unless File.exist? destination
+    FileUtils.cp(source, destination)
+    puts "Generated #{destination}"
+  end
+end
+
+# Change the secret ket in the config file
+text = File.read('config/app_config.yml')
+replace = text.gsub(/PLEASECHANGETHISTOARANDOMSTRINGALSODONEBYSETUPAUTOMATICALLY/, (0..(40 + rand(10))).map { random_char(rand(62)) }.join.to_s)
+File.open('config/app_config.yml', 'w') { |file| file.puts replace }
+puts 'Updated secret key'
+
+# system "bundle"
+if options[:production] == false
+  puts 'Creating all databases'
+  system 'bundle exec rake db:create:all'
+  system 'bundle exec rake db:migrate'
+  system 'bundle exec rake install:base'
+else
+  puts 'Migrating production database'
+  system 'bundle exec rake db:migrate RAILS_ENV=production'
+  puts 'Installing base function'
+  system 'bundle exec rake install:base RAILS_ENV=production'
+end

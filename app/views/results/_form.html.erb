@@ -1,0 +1,154 @@
+<%= simple_form_for @result, :html => { :class => 'form-horizontal' } do |f| %>
+  <fieldset>
+    <legend class="show">Test Result Overview</legend>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td class="title">Test case</td>
+          <td><%= link_to @result.test_case.name + ' - Version ' + @result.test_case.version.to_s, @result.test_case %></td>
+        </tr>
+        <tr>
+          <td class="title">Product</td>
+          <td><%= @result.test_case.product.name %></td>
+        </tr>
+        <tr>
+          <td class="title">Category</td>
+          <td><%= @result.test_case.category.name %></td>
+        </tr>
+
+        <tr>
+          <td class="title">Assignment</td>
+          <td>
+            <% if @result.assignment.test_plan_id %>
+              <%= link_to 'Product: ' + @result.assignment.product.name + ' | Version: ' + @result.assignment.version.version + ' | Test Plan: ' + @result.assignment.test_plan.name, @result.assignment %>
+            <% else %>
+              <%= link_to 'Product: ' + @result.assignment.product.name + ' | Version: ' + @result.assignment.version.version + ' | Stencil: ' + @result.assignment.stencil.name, @result.assignment %>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <td class="title">Device</td>
+          <td>
+            <% if @result.device_id %>
+              <%= link_to @result.device.name, @result.device %>
+            <% else %>
+              None
+            <% end %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <% if @result.test_case.custom_items.count > 0 %>
+      <div class="row-fluid">
+        <div class="span12">
+          <legend class="show">Custom Fields</legend>
+          <table class="table">
+            <tbody>
+              <% @result.test_case.custom_items.each do |custom_item|%>
+                <tr>
+                  <td class="title"><%= custom_item.custom_field.field_name %></td>
+                  <td>
+                    <% if custom_item.custom_field.field_type == 'check_box' %>  
+                      <% if custom_item.value == '1' %>
+                        True
+                      <% else %>
+                        False
+                      <% end %>
+    			   	<% elsif custom_item.custom_field.field_type == 'link' && custom_item.value.split(',').count == 2 %>	
+    			  		<%= link_to custom_item.value.split(',').map(&:strip).first, custom_item.value.split(',').map(&:strip).last, :target => "_blank" %>
+                    <% else %>
+                      <%= custom_item.value %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div> <!-- end module div -->
+    <% end %>
+
+  <% if CustomField.where(:item_type => 'result', :active => true).count > 0 %>
+    <legend>Custom Fields</legend>
+    <%= f.fields_for :custom_items do |custom_item|%>
+      <div class="control-group">
+        <%= custom_item.hidden_field :custom_field_id %>
+        <label class="control-label" for="modified_by"><%= CustomField.where(:id => custom_item.object.custom_field_id).first.field_name %></label>
+        <div class="controls">
+          <% field_type = CustomField.where(:id => custom_item.object.custom_field_id).first.field_type %>
+          <% if field_type == 'string' %>
+            <%= custom_item.text_field :value %>
+          <% elsif field_type == 'drop_down' %>
+            <%= custom_item.select :value, CustomField.where(:id => custom_item.object.custom_field_id).first.accepted_values.split(','), :include_blank => true %>
+          <% elsif field_type == 'check_box' %>
+            <%= custom_item.check_box :value %>
+          <% elsif field_type == 'number' %>
+            <%= custom_item.number_field :value, :step => 0.000001 %>
+          <% elsif field_type == 'radio_button' %>
+            <% CustomField.where(:id => custom_item.object.custom_field_id).first.accepted_values.split(',').each do |radio_value| %>
+              <label class="radio">
+                <%= custom_item.radio_button :value, radio_value %>
+                <%= custom_item.label :value, radio_value %>
+              </label>
+            <% end %>
+		  <% elsif field_type == 'link' %>
+		  	<%= custom_item.text_field :value %>
+		  <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+	
+    <legend class="show">Test Case Steps</legend>
+
+    <% if @result.test_case.steps.empty? %>
+      <p>This test case does not contain any steps.</p>
+    <% else %> 
+    	<table class="table">
+    	  <thead>
+      	  <tr>
+      		  <th></th>
+      		  <th>Action</th>
+      		  <th>Result</th>
+      	  </tr>
+      	</thead>
+      	<tbody>
+        	<% @result.test_case.steps.order('step_number').each do |step| %>
+        	  <tr>
+        		  <td><%= step.step_number %>.</td>
+        		  <td><%= step.action %></td>
+        		  <td><%= step.result %></td>
+        	  </tr>
+        	<% end %>
+        </tbody>
+    	</table>
+    <% end %>
+
+    <legend>Result</legend>
+
+    <p>
+      <% if @result.result.blank? %>
+        <%= f.hidden_field :result %>
+        <div id="result-toggle" class="btn-group" data-toggle="buttons-radio">
+          <button type="button" class="btn" data-result="Passed">Passed</button>
+          <button type="button" class="btn" data-result="Failed">Failed</button>
+          <button type="button" class="btn" data-result="Blocked">Blocked</button>
+        </div>
+  	  <% end %>
+    </p>
+    <br>
+
+    <legend>Additional Information</legend>
+    <%= f.input :bugs, :hint => "(bugs should be separated by commas without spaces. ex. 123,456)" %>    
+    <%= f.input :note, :input_html => { :rows => 5, :class => "input-xxlarge"} %>
+
+  </fieldsest>
+  
+  <div class="actions">
+    <%= f.submit "Save and View", :class => "btn btn-success" %>
+    <%= f.submit "Save and Execute Next", :class => "btn btn-success" %>
+    <a href='#' onclick='history.go(-1);return false;', class="btn btn-inverse">Back</a>
+  </div>
+<% end %>
+

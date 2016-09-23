@@ -1,0 +1,41 @@
+<div class="row-fluid">
+  <div class="span12">
+    <%= simple_form_for @version, :html => { :class => 'form-horizontal' } do |f| %>
+      <fieldset>
+        <legend>Version Overview</legend>
+        <%= f.association :product, collection: product_list %>
+        <%= f.input :version %>
+      	<%= f.input :description, :input_html => { :rows => 5, :class => "input-xxlarge"}   %>
+        <% if (Setting.value('Ticket System').present?) %>
+        <% if @version.product.present? %>
+            <%= f.input :ticket_version_id, as: :select, collection: list_ticket_versions(@version.product.id) %>
+          <% else %>
+            <%= f.input :ticket_version_id, as: :select, collection: list_ticket_versions(-1)%>
+          <% end %>
+        <% end %>
+      	<div class="actions">
+          <% unless @version.id %>	
+            <%= f.submit nil, :class => "btn btn-success"%>
+            <%= f.submit "Save and Create Additional", :class => "btn btn-success" %>
+          <% else %>
+            <%= f.submit nil, :class => "btn btn-success"%>
+          <% end %>
+          <a href='#' onclick='history.go(-1);return false;', class="btn btn-inverse">Back</a>
+        </div>
+      </fieldset>
+    <% end %>
+  </div>
+</div>
+<script>
+  // when the #test result product field changes get a list of ticketing versions
+  $("#version_product_id").change(function() {
+    // make a POST call and replace the content
+    var product = $('select#version_product_id :selected').val();
+    if(product == "") product="0";
+    jQuery.get('<%= jquery_version_ticket_version_update_url %>/' + product, function(data) { 
+      $("#version_ticket_version_id").empty().append(data);
+    })
+    return false;
+  });
+</script>
+

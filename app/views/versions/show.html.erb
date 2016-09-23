@@ -1,0 +1,45 @@
+<% ticket_version = ticket_version_name(@version.ticket_version_id)%>
+
+<h2>Version: <%= @version.version %></h2>
+
+<div class="row-fluid">
+  <div class="span12">
+    <legend class="show">Version Overview</legend>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td class="title">Version</td>
+          <td><%= @version.version %></td>
+        </tr>
+
+        <tr>
+          <td class="title">Description</td>
+          <td><%= @version.description %></td>
+        </tr>
+
+        <tr>
+          <td class="title">Product</td>
+          <td><%= @version.product.name %></td>
+        </tr>
+        <% if Setting.value('Ticket System').present? %>
+          <tr>
+            <td class="title">Ticketing Version</td>
+            <td><%= ticket_version[:name] %></td>
+          </tr>
+
+          <tr>
+            <td class="title">Ticketing Version Description</td>
+            <td><%= format_ticket_text(ticket_version[:description]) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="addLink">
+<% if can? :update, Version %>
+<%= link_to "Edit", edit_version_path(@version), :class => "btn btn-primary"  %>
+<% end %>
+<a href='#' onclick='history.go(-1);return false;', class="btn btn-inverse">Back</a>
+</div>

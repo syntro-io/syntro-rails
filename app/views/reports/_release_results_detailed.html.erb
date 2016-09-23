@@ -1,0 +1,25 @@
+<table class="sortable_table">
+  <thead>
+    <tr class="sortableHeader">
+      <th class="type-string">Test Plan</th>
+      <th class="type-string">Test Case</th>
+      <th class="type-string"><%= @report.version.version %> Result</th>
+      <th class="type-string"><%= @report.version.version %> Comment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% test_cases_in_version_and_dates(@report.version, @report.start_date, @report.end_date).each do |result|%>
+      <tr class="<%= cycle('odd', 'even') %>">
+        <td><%= result[:tp_name] %> - Version <%= result[:tp_version] %></td>
+        <td><%= link_to result[:name], result %> - Version <%= result[:tc_version] %></td>
+        <td><%= result[:v1_result] %></td>
+        <td><%= result[:v1_comment] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br/>
+
+<script>
+$('.sortable_table').simplesortable();
+</script>

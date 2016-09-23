@@ -1,0 +1,8 @@
+<% if !issues.blank? %>
+  <option value=""> </option>
+  <% issues.each do |issue| %>
+    <option value="<%= issue[1] %>"><%= issue[0] %></option>
+  <% end %>
+<% else %>
+  <option value=""> </option>
+<% end %>

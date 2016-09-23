@@ -1,0 +1,8 @@
+<% if !ticket_version.blank? %>
+  <option value=""> </option>
+  <% ticket_version.each do |version| %>
+    <option value="<%= version[:id] %>"><%= version[:name] %></option>
+  <% end %>
+<% else %>
+  <option value=""> </option>
+<% end %>
