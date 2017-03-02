@@ -22,12 +22,10 @@ class AssignmentsController < ApplicationController
         # If yes, remember the version and do a query based on product and version
         # With filter, Note, even with filter we still paginate.
         @selected_version_id = params[:version][:id]
-        @assignments = Assignment.includes(:product, :version, :test_plan, :stencil).where(product_id: @selected_product_id, version_id: @selected_version_id)
-                                 .order(sort_column + ' ' + sort_direction).page(params[:page]).per(20)
+        @assignments = Assignment.includes(:product, :version, :test_plan, :stencil).where(product_id: @selected_product_id, version_id: @selected_version_id).order(sort_column + ' ' + sort_direction).page(params[:page]).per(20)
       else
         # there was no version, but the was a product, so we search on product and paginate
-        @assignments = Assignment.includes(:product, :version, :test_plan, :stencil).where(product_id: @selected_product_id).order(sort_column + ' ' + sort_direction)
-                                 .page(params[:page]).per(20)
+        @assignments = Assignment.includes(:product, :version, :test_plan, :stencil).where(product_id: @selected_product_id).order(sort_column + ' ' + sort_direction).page(params[:page]).per(20)
       end
     else
       # There was no version or product, so we return all assignments and paginate
@@ -35,10 +33,14 @@ class AssignmentsController < ApplicationController
     end
     respond_to do |format|
       format.html # index.html.erb
+      format.json do
+        render json: { assignments: @assignments }
+      end
     end
   end
 
   # GET /assignments/1
+  # GET /assignments/1.json
   # GET /assignments/1.xml
   # GET /assignments/1.pdf
   def show
@@ -56,6 +58,7 @@ class AssignmentsController < ApplicationController
     @results = Result.where(assignment_id: @assignment.id).order('id').includes(:test_case)
     respond_to do |format|
       format.html # show.html.erb
+      format.json { render json: { results: @results } }
       format.pdf do
         pdf = AssignmentPdf.new(@assignment, view_context)
         send_data pdf.render, filename: "assignment_#{@assignment.id}.pdf",
@@ -105,6 +108,7 @@ class AssignmentsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
+      format.json { render json: { assignments: @assignments } }
     end
   end
 
@@ -167,11 +171,11 @@ class AssignmentsController < ApplicationController
       # and status to assigned
       @assignment.task.task = 4
       @assignment.task.status = 0
-      if @assignment.issues.any?
-        @assignment.issues = @assignment.issues.reject(&:blank?).join(',')
-      else
-        @assignment.issues = ''
-      end
+      @assignment.issues = if @assignment.issues.any?
+                             @assignment.issues.reject(&:blank?).join(',')
+                           else
+                             ''
+                           end
 
       saveResult = @assignment.save
 
@@ -216,6 +220,7 @@ class AssignmentsController < ApplicationController
 
         logger.warn 'Assignment not saved correctly}'
         format.html { render action: 'new' }
+        format.json { render json: { some: 'data' } }
       end
     end
   end
@@ -248,6 +253,7 @@ class AssignmentsController < ApplicationController
         # !# @versions = Version.find(:all)
         # !# @plans_select = TestPlan.find(:all).collect {|p| [ p.name + " | Version " + p.version.to_s, p.id ]}
         format.html { render action: 'edit' }
+        format.json { render json: { some: 'data' } }
       end
     end
   end
@@ -268,6 +274,7 @@ class AssignmentsController < ApplicationController
       # Action type based on value from en.yaml
       History.create(assignment_id: @assignment.id, action: 3, user_id: current_user.id)
       format.html { redirect_to(assignments_url) }
+      format.json { render json: { some: 'data' } }
     end
   end
 
@@ -324,10 +331,10 @@ class AssignmentsController < ApplicationController
   def sort_column
     # We no longer use the old way as we accept nexted query results
     # Assignment.column_names.include?(params[:sort]) ? params[:sort] : "product_id"
-    %w(id products.name versions.version test_plans.name stencils.name notes).include?(params[:sort]) ? params[:sort] : 'id'
+    %w[id products.name versions.version test_plans.name stencils.name notes].include?(params[:sort]) ? params[:sort] : 'id'
   end
 
   def sort_direction
-    %w(asc desc).include?(params[:direction]) ? params[:direction] : 'asc'
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : 'asc'
   end
 end

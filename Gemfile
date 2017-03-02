@@ -3,6 +3,8 @@ source 'http://rubygems.org'
 gem 'rails', '~> 4.2.1'
 gem 'mysql2', '~> 0.3.18'
 gem 'pg', '~> 0.18.1'
+gem 'sprockets'
+gem 'rack-cors'
 
 gem 'unicorn', '~> 4.9.0'
 
@@ -28,7 +30,7 @@ gem 'bootstrap-sass', '~> 3.3.4.1'
 gem 'jquery-rails', '~> 4.0.3'
 gem 'jquery-ui-rails', '~> 5.0.3'
 
-gem 'less-rails', '~> 2.7.0' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem 'less-rails', '~> 2.7.0' # Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 
 gem 'rtf', '~> 0.3.3'
 
@@ -39,7 +41,7 @@ gem 'rtf', '~> 0.3.3'
 
 gem 'nifty-generators', '~> 0.4.6'
 
-#require 'mysql2'
+# require 'mysql2'
 
 gem 'cocaine', '~> 0.5.7'
 gem 'nokogiri', '~> 1.6.6.2'
@@ -51,7 +53,7 @@ gem 'mime-types', '~> 2.5'
 # Paperclip requires that ImageMagick is installed on the system
 
 gem 'chosen-rails', '~> 1.4.1'
-gem "compass-rails", github: "Compass/compass-rails", branch: "master"
+gem 'compass-rails', github: 'Compass/compass-rails', branch: 'master'
 gem 'spreadsheet', '~> 1.0.3'
 
 gem 'rake', '~> 10.4.2'
@@ -71,6 +73,9 @@ gem 'soap4r', '~> 1.5.8'
 
 gem 'simple_form', '~> 3.1.0'
 gem 'roo', '~> 2.0.0'
+
+gem 'rubycritic', require: false
+
 # This gem is not directly used by the application
 # However, it is common to automate items using this
 # We simplify our clients' lives by including it in the package
@@ -92,7 +97,7 @@ gem 'selenium-client', '~> 1.2.18'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 
-#Only before applicaiton has been migrated to rails 5.0
+# Only before applicaiton has been migrated to rails 5.0
 gem 'protected_attributes'
 
 # Bundle gems for the local environment. Make sure to
@@ -105,7 +110,7 @@ gem 'protected_attributes'
 gem 'blitz'
 gem 'test-unit'
 group :development, :test do
-  gem 'rspec-rails', '~> 3.2.1' 
+  gem 'rspec-rails', '~> 3.2.1'
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'capybara', '~> 2.4.4'
   gem 'database_cleaner', '~> 1.4.1'

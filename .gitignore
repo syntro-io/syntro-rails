@@ -10,6 +10,10 @@
 /test/version_tmp/
 /tmp/
 
+
+.DS_Store
+app/assets/.DS_Store
+
 # Used by dotenv library to load environment variables.
 # .env
 

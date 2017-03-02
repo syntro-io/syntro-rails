@@ -85,7 +85,7 @@ TestDB::Application.routes.draw do
   # List categories belonging to another category (for category module)
   get 'category/list_children/:category_id', controller: 'categories', action: 'list_children', as: 'list_category_children'
   # List categories belonging to a product (for test case module)
-  get 'test_cases/list/:product_id', controller: 'test_cases', action: 'list', as: 'list_test_case_categories'
+  get 'test_cases/list/:product_id', controller: 'test_cases', action: 'list', as: 'list_test_case_categories', defaults: { format: 'js' }
   # List categories belonging to another category (for test case module)
   get 'test_cases/list_children/:category_id', controller: 'test_cases', action: 'list_children', as: 'list_test_case_category_children'
   # List categories belonging to a product (for test plan module)
