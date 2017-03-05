@@ -1,0 +1,32 @@
+<div class="rectangle" style="display: block"></div>
+<% if @test_plans.empty? %>
+  <div class="treeNoData">Product does not have any test plans</div>
+<% else %>
+  <div class='treeNode'>
+    <table class='table table-striped table-hover' id='table_<%= @product_id%>'>
+      <thead>
+        <tr>
+          <th class='type-int' , align='left'>Id</th>
+          <th class='type-string' , align='left'>Name</th>
+          <th class='type-string' , align='left'>Description</th>
+          <th class='type-int' , align='left'>Version</th>
+          <th>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @test_plans.each do |testplan| %>
+          <tr class='<%= cycle('even', 'odd') %> rowLink'>
+            <td><%= testplan.id %></td>
+            <td><a href='<%= test_plan_path(testplan) %>'><%= testplan.deprecated ? '<del>'.html_safe + escape_javascript(testplan.name) + '</del>'.html_safe : testplan.name %></a></td>
+            <td><%= truncate(testplan.description) %></td>
+            <td><%= testplan.version %></td>
+            <% if can? :update, @test_plan %>
+              <td><a href='<%= edit_test_plan_path(testplan) %>'><i class='icon-edit'></i>Edit</a></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

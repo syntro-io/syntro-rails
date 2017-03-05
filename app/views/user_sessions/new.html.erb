@@ -1,74 +1,63 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Test Case DB</title>
-        <%= stylesheet_link_tag    "application", :media => "all" %>
-        <%= javascript_include_tag "application" %>
-        <%= csrf_meta_tags %>
-    </head>
-
-    <body class="login">
-        <div class="container">
-            <% flash.each do |name, msg| %>
-            <% if msg.is_a?(String) %>
-            <div class="alert alert-dismissable alert-<%= name %>" role="alert">
-                <a class="close" data-dismiss="alert">&#215;</a>
-                <%= content_tag :div, msg, :id => "flash_#{name}" %>
+  <head>
+    <title>Test Case DB</title>
+    <%= stylesheet_link_tag    "application", :media => "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body class="login">
+    <div class="container">
+      <% flash.each do |name, msg| %>
+        <% if msg.is_a?(String) %>
+          <div class="alert alert-dismissable alert-<%= name %>" role="alert">
+            <a class="close" data-dismiss="alert">&#215;</a>
+            <%= content_tag :div, msg, :id => "flash_#{name}" %>
+          </div>
+        <% end %>
+      <% end %>
+      <!--[if lt IE 8]>
+        <center>
+          <p>Your browser is not supported. Please use IE 8 and up or Firefox 3.6 and up.</p>
+        </center>
+      <![endif]-->
+      <div id="nojs">Please enable JavaScript before logging in to this application.</div>
+      <div class="loginmodal-container">
+        <h1 class="loginmodal-logo"><a><i class="glyphicon glyphicon-flash"></i></a>Syntro</h1>
+        <br>
+        <!-- <form> -->
+        <%= simple_form_for @user_session do |form| %>
+        <% if @user_session.errors.any? %>
+          <% @user_session.errors.full_messages.each do |msg| %>
+            <div class="alert alert-dismissable alert-danger ">
+              <a class="close" data-dismiss="alert">&#215;</a>
+              <%= content_tag :div, msg, :id => "flash_error" %>
             </div>
-            <% end %>
-            <% end %>
-            <!--[if lt IE 8]>
-            <center><p>Your browser is not supported. Please use IE 8 and up or Firefox 3.6 and up.</p></center>
-            <![endif]-->
-            <div id="nojs">
-                Please enable JavaScript before logging in to this application.
-            </div>
-            <div class="panel panel-default col-lg-4 col-md-4 col-lg-offset-4 col-md-offset-4">
-                <div class="panel-body">
-                    <%= simple_form_for @user_session, :html => { :class => 'form-horizontal' } do |f| %>
-                    <h2 class="form-signin-heading"><%= image_tag "logo.png", :size => "214x35" %></h2>
-
-                    <% if @user_session.errors.any? %>
-                    <% @user_session.errors.full_messages.each do |msg| %>
-                    <div class="alert alert-dismissable alert-danger ">
-                        <a class="close" data-dismiss="alert">&#215;</a>
-                        <%= content_tag :div, msg, :id => "flash_error" %>
-                    </div>
-                    <% end %>
-                    <% end %>
-                    <%= hidden_field :user_session, :referer, value: params[:referer]%>
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <%= f.input :username, label: false, placeholder: "Username" %>
-                        </div>
-                        <div class="col-lg-7">
-                            <%= f.input :password, label: false, placeholder: "Password" %>
-                        </div>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" value="remember-me">
-                            Remember me </label>
-                    </div>
-                    <button class="btn btn-lg btn-primary" type="submit">
-                        Sign in
-                    </button>
-                    <% if @google_auth_enabled %>
-                    <%= link_to image_tag("auth/google_oauth2_64.png", :alt=>"Sign In with Google", :title=>"Sign In with Google"), "/auth/google_oauth2" %>
-                    <% end %>
-                    <% end %>
-                </div>
-            </div>
+          <% end %>
+        <% end %>
+          <%= hidden_field :user_session, :referer, value: params[:referer]%>
+          <%= form.input :username, label: false, placeholder: "Username" %>
+          <%= form.input :password, label: false, placeholder: "Password" %>
+          <input type="checkbox" value="remember-me">Remember me </label>
+        <input type="submit" name="login" class="login loginmodal-submit" value="Login">
+        <% if @google_auth_enabled %>
+          <%= link_to image_tag("auth/google_oauth2_64.png", :alt=>"Sign In with Google", :title=>"Sign In with Google"), "/auth/google_oauth2" %>
+        <% end %>
+      <% end %>
+      <!-- </form> -->
+      <div class="login-help">
+        <a href="#">Register</a> - <a href="#">Forgot Password</a>
+      </div>
+    </div>
+  </div>
+  <div id="login-footer" class="text-center">
+    Copyright &copy; 2016 - 2017 Syntro. All rights reserved.
         </div>
-        <div id="login-footer" class="text-center">
-            Copyright &copy; 2012 - 2014 MSJ IT Services Inc. All rights reserved.
-        </div>
-        </div>
-        </div>
-
-        <script>
-            $('input').placeholder();
-            $('#user_session_username').focus();
-        </script>
-    </body>
+</div>
+</div>
+<script>
+  $('input').placeholder();
+                      $('#user_session_username').focus();
+</script>
+</body>
 </html>

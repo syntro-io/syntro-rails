@@ -1,5 +1,5 @@
 require 'xmlrpc/client'
-require 'soap/wsdlDriver'
+# require 'soap/wsdlDriver'
 require 'rexml/document'
 
 # Bugzilla requests are performed using the xmlrpc client
@@ -67,7 +67,7 @@ class Ticket
     # Using XML we can query all statuses at once
     if settings['system'] == 'Bugzilla'
       server = XMLRPC::Client.new2(settings['url'])
-      ok, result = server.call2('Bug.get', ids: ids, include_fields: %w(id status summary), Bugzilla_login: settings['username'], Bugzilla_password: settings['password'])
+      ok, result = server.call2('Bug.get', ids: ids, include_fields: %w[id status summary], Bugzilla_login: settings['username'], Bugzilla_password: settings['password'])
 
       if ok
         result['bugs'].each do |bug|
@@ -402,11 +402,11 @@ class Ticket
 
     # For bugzilla we need to add the xmlrpc.cgi. It is the same for all systems
     # For other systems, not required
-    if settings['system'] == 'Bugzilla'
-      settings['url'] = Setting.value('Ticket System Url') + 'xmlrpc.cgi'
-    else
-      settings['url'] = Setting.value('Ticket System Url')
-    end
+    settings['url'] = if settings['system'] == 'Bugzilla'
+                        Setting.value('Ticket System Url') + 'xmlrpc.cgi'
+                      else
+                        Setting.value('Ticket System Url')
+                      end
 
     settings
   end

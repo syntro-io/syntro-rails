@@ -1,204 +1,321 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>TestCaseDB</title>
-        <!--[if lt IE 9]>
-        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
-        <![endif]-->
-        <link rel="shortcut icon" href="<%= asset_path "favicon.ico" %>">
-        <%= stylesheet_link_tag    "application", :media => "all" %>
-        <%= javascript_include_tag "application" %>
-        <%= csrf_meta_tags %>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div id="wrap">
-            <nav class="navbar navbar-inverse navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-bar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="/"><%= image_tag "icon.png" %></a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="menu-bar">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                <a href="/" id="help-link">Help</a>
-                            </li>
-                        </ul>
-                        <ul class="nav navbar-nav">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Tasks <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'List', tasks_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'New', new_task_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'My Tasks', my_tasks_path %>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Test Cases <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'List', test_cases_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'New', new_test_case_path %>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Test Plans <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'List', test_plans_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'New', new_test_plan_path %>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Stencils <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'List', stencils_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'New', new_stencil_path %>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Test Assignments <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'List', assignments_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'New', new_assignment_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Execute', results_path %>
-                                    </li>
-                                </ul>
-                            </li>
-                            <% if can? :read, Report %>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Reports <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'List', reports_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'New', new_report_path %>
-                                    </li>
-                                </ul>
-                            </li>
-                            <% end %>
-                            <% if can? :read, Schedule %>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Scheduler <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'List', schedules_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'New', new_schedule_path %>
-                                    </li>
-                                </ul>
-                            </li>
-                            <% end %>
-                            <% if can? :update, Admin %>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Admin <b class="caret"></b> </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <%= link_to 'Products', products_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Test Types', test_types_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Versions', versions_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Categories', categories_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Custom Fields', custom_fields_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Devices', devices_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Tags', tags_path %>
-                                    </li>
-                                    <% if can? :read, User %>
-                                    <li>
-                                        <%= link_to 'Users', users_path %>
-                                    </li>
-                                    <li>
-                                        <%= link_to 'Settings', settings_path %>
-                                    </li>
-                                    <% end %>
-                                </ul>
-                            </li>
-                            <% end %>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+  <head>
+    <title>Syntro</title>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="<%= asset_path "favicon.ico" %>">
+    <%= stylesheet_link_tag    "application", :media => "all" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <header class="navbar navbar-default navbar-fixed-top">
+      <div class="row nav-bar-header">
+        <ul class="nav navbar-nav navbar-left">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> New <b class="caret"></b> </a>
+            <ul class="dropdown-menu" role="menu">
+              <li><%= link_to 'Test Plan', new_test_plan_path %></li>
+              <li><%= link_to 'Test Case', test_cases_path %></li>
+              <li><%= link_to 'Stencils', stencils_path %></li>
+            </ul>
+          </li>
 
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-lg-offset-8 col-md-offset-8 col-sm-offset-8">
-                        Welcome <%= current_user.first_name + ' ' + current_user.last_name%> |
-                        <%= link_to 'My Settings', my_settings_path %> |
-                        <%= link_to 'Logout', logout_path %>
-
-                    </div>
-                </div>
-                <% flash.each do |name, msg| %>
-                <% if msg.is_a?(String) %>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Test Assignments <b class="caret"></b> </a>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <%= link_to 'List', assignments_path %>
+              </li>
+              <li>
+                <%= link_to 'New', new_assignment_path %>
+              </li>
+              <li>
+                <%= link_to 'Execute', results_path %>
+              </li>
+            </ul>
+          </li>
+          <% if can? :update, Admin %>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Admin <b class="caret"></b> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to 'Products', products_path %>
+                </li>
+                <li>
+                  <%= link_to 'Test Types', test_types_path %>
+                </li>
+                <li>
+                  <%= link_to 'Versions', versions_path %>
+                </li>
+                <li>
+                  <%= link_to 'Categories', categories_path %>
+                </li>
+                <li>
+                  <%= link_to 'Custom Fields', custom_fields_path %>
+                </li>
+                <li>
+                  <%= link_to 'Devices', devices_path %>
+                </li>
+                <li>
+                  <%= link_to 'Tags', tags_path %>
+                </li>
+                <% if can? :read, User %>
+                  <li>
+                    <%= link_to 'Users', users_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'Settings', settings_path %>
+                  </li>
+                <% end %>
+              </ul>
+            </li>
+          <% end %>
+        </ul>
+        <form class="navbar-form navbar-left">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+      </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+              <%= current_user.first_name + ' ' + current_user.last_name%> <b class="caret"></b> </a>
+            <ul class="dropdown-menu" role="menu">
+              <li><%= link_to 'My Settings', my_settings_path %></li>
+              <li><%= link_to 'Logout', logout_path %></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <aside id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-item sidebar-logo">
+            <a><i class="glyphicon glyphicon-flash"></i></a>
+              Syntro
+          </li>
+          <li class="sidebar-item <%= 'active' if current_page? controller: :home %>">
+            <%= link_to home_path, class: "project-nav-item code-index-nav" do %>
+              <%= content_tag :i, '', :class => "glyphicon glyphicon-dashboard" %>
+              Overview
+            <% end %>
+          </li>
+          <li class="sidebar-item <%= 'active' if current_page? controller: :test_plans %>">
+            <%= link_to test_plans_path, class: "project-nav-item code-index-nav" do %>
+              <%= content_tag :i, '', class: "glyphicon glyphicon-globe" %>
+              Test Suite
+            <% end %>
+          </li>
+          <li class="sidebar-item <%= 'active' if current_page? controller: :schedules %>">
+            <%= link_to schedules_path, class: "project-nav-item code-index-nav" do %>
+              <%= content_tag :i, '', class: "glyphicon glyphicon-transfer" %>
+              Issues
+            <% end %>
+          </li>
+          <li class="sidebar-item <%= 'active' if current_page? controller: :schedules %>">
+            <%= link_to tasks_path, class: "project-nav-item code-index-nav" do %>
+              <%= content_tag :i, '', class: "glyphicon glyphicon-time" %>
+              Schedule
+            <% end %>
+          </li>
+          <% if can? :read, Report %>
+            <li class="sidebar-item <%= 'active' if current_page? controller: :reports %>">
+              <%= link_to reports_path, class: "project-nav-item code-index-nav" do %>
+                <%= content_tag :i, '', class: "glyphicon glyphicon-signal" %>
+                Reports
+            <% end %>
+            </li>
+          <% end %>
+          <li class="sidebar-item <%= 'active' if current_page? controller: :reports %>">
+            <%= link_to reports_path, class: "project-nav-item code-index-nav" do %>
+              <%= content_tag :i, '', class: "glyphicon glyphicon-cog" %>
+              Settings
+            <% end %>
+          </li>
+        </ul>
+      </aside>
+      <!-- Page Content -->
+      <div id="page-content-wrapper">
+        <div class="container-fluid">
+          <div class="row">
+            <% flash.each do |name, msg| %>
+              <% if msg.is_a?(String) %>
                 <div class="alert alert-dismissable alert-<%= name %>">
-                    <a class="close" data-dismiss="alert">&#215;</a>
-                    <%= content_tag :div, msg, :id => "flash_#{name}" %>
+                  <a class="close" data-dismiss="alert">&#215;</a>
+                  <%= content_tag :div, msg, :id => "flash_#{name}" %>
                 </div>
-                <% end %>
-                <% end %>
-
-                <%= yield %>
-
-            </div>
-            <div id="push"></div>
+              <% end %>
+            <% end %>
+            <%= yield %>
+          </div>
         </div>
-
-        <div id="footer">
-            <div class="container">
-                <p class="text-muted credit">
-                    Need assistance. Download the <%= link_to "Admin Guide", "assets/admin_guide.pdf" %> or  <%= link_to "Quick Start Guide", "assets/quick_start_guide.pdf" %>
+        <div id="push"></div>
+      </div>
+    </div>
+    <!-- End -->
+    <!--
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-bar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><%= image_tag "icon.png" %></a>
+        </div>
+        <div class="collapse navbar-collapse" id="menu-bar">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="/" id="help-link">Help</a>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Tasks <b class="caret"></b> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to 'List', tasks_path %>
+                </li>
+                <li>
+                  <%= link_to 'New', new_task_path %>
+                </li>
+                <li>
+                  <%= link_to 'My Tasks', my_tasks_path %>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Test Cases <b class="caret"></b> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to 'List', test_cases_path %>
+                </li>
+                <li>
+                  <%= link_to 'New', new_test_case_path %>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Test Plans <b class="caret"></b> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to 'List', test_plans_path %>
+                </li>
+                <li>
+                  <%= link_to 'New', new_test_plan_path %>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Stencils <b class="caret"></b> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to 'List', stencils_path %>
+                </li>
+                <li>
+                  <%= link_to 'New', new_stencil_path %>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Test Assignments <b class="caret"></b> </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <%= link_to 'List', assignments_path %>
+                </li>
+                <li>
+                  <%= link_to 'New', new_assignment_path %>
+                </li>
+                <li>
+                  <%= link_to 'Execute', results_path %>
+                </li>
+              </ul>
+            </li>
+            <% if can? :read, Report %>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Reports <b class="caret"></b> </a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <%= link_to 'List', reports_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'New', new_report_path %>
+                  </li>
+                </ul>
+              </li>
+            <% end %>
+            <% if can? :read, Schedule %>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Scheduler <b class="caret"></b> </a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <%= link_to 'List', schedules_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'New', new_schedule_path %>
+                  </li>
+                </ul>
+              </li>
+            <% end %>
+            <% if can? :update, Admin %>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"> Admin <b class="caret"></b> </a>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <%= link_to 'Products', products_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'Test Types', test_types_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'Versions', versions_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'Categories', categories_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'Custom Fields', custom_fields_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'Devices', devices_path %>
+                  </li>
+                  <li>
+                    <%= link_to 'Tags', tags_path %>
+                  </li>
+                  <% if can? :read, User %>
+                    <li>
+                      <%= link_to 'Users', users_path %>
+                    </li>
+                    <li>
+                      <%= link_to 'Settings', settings_path %>
+                    </li>
+                  <% end %>
+                </ul>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  -->
+    <div id="footer">
+      <div class="container">
+        <p class="text-muted credit">
+          <a href="http://www.testcasedb.com" target="_blank">Syntro</a>. Copyright &copy; 2016 - 2017
                 </p>
-                <p class="text-muted credit">
-                    <a href="http://www.testcasedb.com" target="_blank">TestCaseDB</a>. Copyright &copy; 2012 - 2013 <a href="http://www.msjit.ca" target="_blank">MSJ IT Services Inc</a>.
-                    Forked by Erwan KOFFI.
-                </p>
-            </div>
-        </div>
-
-        <div id="help-modal">
-            <h1>Online Help</h1>
-            <div id="help-content"></div>
-        </div>
-    </body>
+      </div>
+    </div>
+    <div id="help-modal">
+      <h1>Online Help</h1>
+      <div id="help-content"></div>
+    </div>
+  </body>
 </html>
-

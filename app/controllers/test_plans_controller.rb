@@ -128,7 +128,7 @@ class TestPlansController < ApplicationController
         end
       # If there was an error, return to the new page
       else
-        @products = Product.find(:all, order: 'name')
+        @products = Product.order('name').all
         format.html { render action: 'new' }
       end
     end
@@ -352,6 +352,7 @@ class TestPlansController < ApplicationController
     # end
 
     respond_to do |format|
+      format.html
       format.js
     end
   end

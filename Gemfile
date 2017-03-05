@@ -110,6 +110,7 @@ gem 'protected_attributes'
 gem 'blitz'
 gem 'test-unit'
 group :development, :test do
+  gem 'meta_request'
   gem 'rspec-rails', '~> 3.2.1'
   gem 'factory_girl_rails', '~> 4.5.0'
   gem 'capybara', '~> 2.4.4'

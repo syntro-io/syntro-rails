@@ -8,6 +8,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render xml: @tags }
+      format.json { render json: { tags: @tags } }
     end
   end
 
@@ -20,6 +21,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render xml: @tag }
+      format.json { render json: { tags: @tags } }
     end
   end
 
@@ -32,6 +34,7 @@ class TagsController < ApplicationController
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render xml: @tag }
+      format.json { render json: { tags: @tags } }
     end
   end
 
@@ -82,7 +85,6 @@ class TagsController < ApplicationController
   # DELETE /tags/1
   # DELETE /tags/1.xml
   def destroy
-    @tag = Tag.find(params[:id])
     authorize! :destroy, @tag
     @tag.destroy
 

@@ -10,8 +10,8 @@ en:
       next: "Next"
       last: "Last"
       truncate: "..."
-  
-  # The different roles    
+
+  # The different roles
   user_roles:
     1: "Tester"
     2: "Senior Tester"
@@ -19,7 +19,7 @@ en:
     4: "Developer"
     10: "Admin"
     11: "Web API User"
-    
+
   # history_actions none must not be deleted
   # Used to fill the 0 value item of the map of values
   history_actions:
@@ -31,15 +31,15 @@ en:
     5: "failed"
     6: "blocked"
     7: "commented on"
-    
+
   # List of tasks used by tasks module
   task_types:
     0: "Create Test Cases"
     1: "Create Test Plan"
     2: "Review Test Cases"
     3: "Review Test Plan"
-    4: "Execute Test Plan"
-    
+    4: "Run Test Plan"
+
   # task_status is again for task module
   task_status:
     0: "Assigned"
@@ -50,19 +50,21 @@ en:
   # ticketing systems used in settings to set system type
   ticketing_systems:
     'none': "None"
-    'Bugzilla': 'Bugzilla'
+    'Github': 'Github'
     'Jira': 'Jira'
+    'Bugzilla': 'Bugzilla'
     'Mantis': 'Mantis Bug Tracker'
     'Redmine': 'Redmine'
-    
+
   # Item status is used for test cases (and potentially test plans
   item_status:
-    0: "Draft"
-    1: "Pending Review"
-    2: "Reviewed"
-    3: "Changes pending"
-    4: "Complete"
-    
+    0: "Untested"
+    1: "Blocked"
+    2: "Failed"
+    3: "Retest"
+    4: "Passed"
+    5: "NotRequired"
+
   custom_field_item_types:
     'test_case': "Test Case"
     'test_plan': "Test Plan"
@@ -76,18 +78,18 @@ en:
     'check_box': "Check Box"
     'radio_button': "Radio Button"
     'number': "Number"
-    'link': "Link" 
-  
+    'link': "Link"
+
   # Content types for test case targets
   content_types:
     1: 'jMeter http samples'
     2: 'jMeter jdbc samples'
-  
+
   # Content type xpath sctrings
   content_type_xpaths:
     1: "//testResults/httpSample"
     2: "//testResults/sample"
-    
+
   # Statistic types define what sort of statistic is saved in a result_statistic
   statistic_types:
     1: 'Total'

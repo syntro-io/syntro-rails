@@ -4,7 +4,8 @@ module SchedulesHelper
   end
 
   def user_email_list
-    User.find(:all, order: 'last_name, first_name').collect { |u| [u.last_name + ', ' + u.first_name + ' <' + u.email + '>', u.id] }
+    User.order('last_name, first_name DESC').all.collect { |u| [u.last_name + ', ' + u.first_name + ' <' + u.email + '>', u.id] }
+    # User.find(:all, order: 'last_name, first_name').collect { |u| [u.last_name + ', ' + u.first_name + ' <' + u.email + '>', u.id] }
   end
 
   # This is used by AutomationMailer to add notes if required
